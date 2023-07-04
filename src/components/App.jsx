@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import { Toaster, toast } from 'react-hot-toast';
 
 import Section from './Section/Section';
 import ContactForm from './ContactForm/ContactForm';
@@ -16,6 +17,21 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const localData = localStorage.getItem('contacts');
+    if (localData) this.setState({ contacts: JSON.parse(localData) });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts)
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    // for hot react notification
+    if (prevState.contacts.length < this.state.contacts.length)
+      toast.success('Create new contact');
+    if (prevState.contacts.length > this.state.contacts.length)
+      toast.error('Delete contact');
+  }
 
   createContact = data => {
     const newContact = { ...data, id: nanoid() };
@@ -49,16 +65,15 @@ export class App extends Component {
   };
 
   render() {
+    const { filter } = this.state;
     return (
       <>
+        <Toaster />
         <Section title="Phonebook">
           <ContactForm createContact={this.createContact} />
         </Section>
         <Section title="Contacts">
-          <Filter
-            value={this.state.filter}
-            handleChangeFilter={this.handleChangeFilter}
-          />
+          <Filter value={filter} handleChangeFilter={this.handleChangeFilter} />
           <ContactList
             contacts={this.getFilterContacts()}
             deleteContact={this.deleteContact}

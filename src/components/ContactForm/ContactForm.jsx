@@ -9,20 +9,15 @@ class ContactForm extends Component {
     number: '',
   };
 
-  // Відповідає за оновлення стану
-  // Для всіх інпутів створюємо один обробник
-  // Розрізняти інпути будемо за атрибутом name
   handleChange = ({ target }) => {
     this.setState({
-      [target.name]: target.value, //name- input => name="name"
+      [target.name]: target.value,
     });
   };
 
-  // Викликається під час відправлення форми
   handleSubmit = event => {
     event.preventDefault();
-    // Проп, який передається формі для виклику під час сабміту
-    // this.props.createContact(this.state);//другий варіант
+
     this.props.createContact({
       name: this.state.name,
       number: this.state.number,
@@ -30,10 +25,11 @@ class ContactForm extends Component {
     this.setState({
       name: '',
       number: '',
-    }); //чистимо інпути
+    });
   };
 
   render() {
+    const { name, number } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <Wrap>
@@ -41,7 +37,7 @@ class ContactForm extends Component {
           <label>
             <Input
               onChange={this.handleChange}
-              value={this.state.name}
+              value={name}
               type="text"
               name="name"
               placeholder="Enter a contact name"
@@ -56,7 +52,7 @@ class ContactForm extends Component {
           <label>
             <Input
               onChange={this.handleChange}
-              value={this.state.number}
+              value={number}
               type="tel"
               name="number"
               placeholder="Enter a contact number"
